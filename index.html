@@ -163,6 +163,7 @@
       .catch((err) => {
         console.error("LIFF init/getProfile error:", err);
         document.getElementById("result").textContent = "❌ 無法取得使用者資訊";
+      });
     
     // 表單送出時將資料存進 Firestore
     document.getElementById("feedback-form").addEventListener("submit", async function (e) {
