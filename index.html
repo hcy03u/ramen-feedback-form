@@ -121,7 +121,7 @@
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script>
     async function initLIFF() {
-      await liff.init({ liffId: "你的-LIFF-ID" }); // 👈 換成你們自己申請的 LIFF ID
+      await liff.init({ liffId: "2007489792-rAexnRA9" });
       if (!liff.isLoggedIn()) {
         liff.login();
       } else {
@@ -176,7 +176,7 @@
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const db = getFirestore(app);
-    const liffId = "2007489792-rAexnRA9";
+    //const liffId = "2007489792-rAexnRA9";
 
     //liff
     //  .init({ liffId })
