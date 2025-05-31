@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -124,6 +123,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+    import liff from "https://static.line-scdn.net/liff/edge/2/sdk.js";
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -143,11 +143,30 @@
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const db = getFirestore(app);
-
-    // 模擬抓 user_id（之後可改成 LIFF）
-    const mockUserId = "U12345678";
-    document.getElementById("user_id").value = mockUserId;
     
+    //
+    const liffId = "2007489792-rAexnRA9";
+
+    liff
+      .init({ liffId })
+      .then(() => {
+        if (!liff.isLoggedIn()) {
+          liff.login();
+        } else {
+          return liff.getProfile();
+        }
+      })
+      .then((profile) => {
+        if (profile) {
+          const userId = profile.userId;
+          document.getElementById("user_id").value = userId;
+        }
+      })
+      .catch((err) => {
+        console.error("LIFF init/getProfile error:", err);
+        document.getElementById("result").textContent = "❌ 無法取得使用者資訊";
+     });
+
     // 表單送出時將資料存進 Firestore
     document.getElementById("feedback-form").addEventListener("submit", async function (e) {
       e.preventDefault();
@@ -169,6 +188,5 @@
       }
     });
   </script>
-
 </body>
 </html>
