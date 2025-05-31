@@ -117,6 +117,39 @@
       <div id="result"></div>
     </form>
   </div>
+
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script>
+    async function initLIFF() {
+      await liff.init({ liffId: "你的-LIFF-ID" }); // 👈 換成你們自己申請的 LIFF ID
+      if (!liff.isLoggedIn()) {
+        liff.login();
+      } else {
+        const profile = await liff.getProfile();
+        const userId = profile.userId;
+      
+        // 顯示用戶 LINE 的名字（可選）
+        console.log("使用者 ID：", userId);
+
+        // 呼叫你們後端，取得對應 display_name
+        try {
+          const response = await fetch(`https://linebot-fastapi-uhmi.onrender.com/users/${userId}`);
+          const result = await response.json();
+
+          if (result.status === "success") {
+            document.getElementById("user_id").value = result.user.display_name;
+          } else {
+            console.error("查無此用戶");
+          }
+        } catch (error) {
+          console.error("取得使用者資料失敗", error);
+        }
+      }
+    }
+
+    window.onload = initLIFF;
+  </script>
+
   
   <script type="module">
     // Import the functions you need from the SDKs you need
@@ -143,30 +176,29 @@
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const db = getFirestore(app);
-    
-    //
     const liffId = "2007489792-rAexnRA9";
 
-    liff
-      .init({ liffId })
-      .then(() => {
-        if (!liff.isLoggedIn()) {
-          liff.login();
-        } else {
-          return liff.getProfile();
-        }
-      })
-      .then((profile) => {
-        if (profile) {
-          const userId = profile.userId;
-          document.getElementById("user_id").value = userId;
-        }
-      })
-      .catch((err) => {
-        console.error("LIFF init/getProfile error:", err);
-        document.getElementById("result").textContent = "❌ 無法取得使用者資訊";
-     });
-
+    //liff
+    //  .init({ liffId })
+    //  .then(() => {
+    //    if (!liff.isLoggedIn()) {
+    //      liff.login();
+    //    } else {
+    //      return liff.getProfile();
+    //    }
+    //  })
+    //  .then((profile) => {
+    //    if (profile) {
+    //      const userId = profile.userId;
+    //      document.getElementById("user_id").value = userId;
+    //    }
+    //  })
+    //  .catch((err) => {
+    //    console.error("LIFF init/getProfile error:", err);
+    //    document.getElementById("result").textContent = "❌ 無法取得使用者資訊";
+    // });
+    
+    
     // 表單送出時將資料存進 Firestore
     document.getElementById("feedback-form").addEventListener("submit", async function (e) {
       e.preventDefault();
